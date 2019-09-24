@@ -1,0 +1,57 @@
+name:                hs-torrent
+version:             0.1.0.0
+-- synopsis:
+-- description:
+homepage:            https://github.com/githubuser/hs-torrent#readme
+license:             BSD3
+license-file:        LICENSE
+author:              Author name here
+maintainer:          example@example.com
+copyright:           2019 Author name here
+category:            Web
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  ghc-options:         -Wall
+  exposed-modules:     Lib
+                     , Data.BEncoded
+  other-modules:       Prelude
+  build-depends:       base
+                     , protolude
+                     , text
+                     , bytestring
+                     , containers
+                     , http-client
+                     , parsec
+  default-language:    Haskell2010
+  ghc-options:         -Wall
+  default-extensions:  OverloadedStrings, NoImplicitPrelude
+
+executable hs-torrent-exe
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , hs-torrent
+                     , protolude
+  default-language:    Haskell2010
+  default-extensions:  OverloadedStrings, NoImplicitPrelude
+
+test-suite hs-torrent-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base
+                     , hs-torrent
+                     , protolude
+                     , hspec
+  ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+  default-extensions:  OverloadedStrings, NoImplicitPrelude
+
+source-repository head
+  type:     git
+  location: https://github.com/githubuser/hs-torrent
