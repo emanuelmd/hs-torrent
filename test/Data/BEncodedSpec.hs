@@ -5,16 +5,16 @@ import           Prelude
 import           Test.Hspec
 
 import           Data.BEncoded (BEncoded (..), decode, encode)
+import qualified Data.Map      as Map
 
 sampleDictionary :: BEncoded
-sampleDictionary = BDict
+sampleDictionary = BDict . Map.fromList $
   [("name", BString "Emanuel")
   ,("age", BInteger 24)
   ,("shopping_list", BList [BString "eggs", BString "ham", BInteger 20])]
 
 sampleList :: BEncoded
-sampleList = BDict [
-  ("my_list", BList [BString "eggs", BString "ham", BInteger 3000])]
+sampleList = BList [BString "eggs", BString "ham", BInteger 3000]
 
 spec :: Spec
 spec =
@@ -27,11 +27,23 @@ spec =
       let (Just decodedList) = decode . encode $ sampleList
       decodedList `shouldBe` sampleList
 
-    it "should decode and encode a list" $ do
+    it "should decode and encode a string" $ do
       let str = BString "awesome"
       let encoded = encode str
       encoded `shouldBe` "7:awesome"
       let (Just decoded) = decode encoded
       decoded `shouldBe` str
 
+    it "should decode strings" $ do
+      let (Just (BString decoded)) = decode "4:spam"
+      decoded `shouldBe` "spam"
 
+    it "should decode numbers" $ do
+      let (Just (BInteger decoded)) = decode "i32e"
+      decoded `shouldBe` 32
+
+    it "should decode lists" $ do
+      let (Just (BList [BInteger integ, BString str, BList l])) = decode "li20e3:heylee"
+      integ `shouldBe` 20
+      str `shouldBe` "hey"
+      l `shouldBe` []

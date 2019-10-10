@@ -1,4 +1,3 @@
-module Prelude (module X) where
+module Prelude ( module X ) where
 
 import Protolude as X
-

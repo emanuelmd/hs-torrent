@@ -5,9 +5,9 @@ version:             0.1.0.0
 homepage:            https://github.com/githubuser/hs-torrent#readme
 license:             BSD3
 license-file:        LICENSE
-author:              Author name here
+author:              Emanuel M
 maintainer:          example@example.com
-copyright:           2019 Author name here
+copyright:           2019 Emanuel Moldovan
 category:            Web
 build-type:          Simple
 extra-source-files:  README.md
@@ -18,6 +18,7 @@ library
   ghc-options:         -Wall
   exposed-modules:     Lib
                      , Data.BEncoded
+                     , Data.Meta
   other-modules:       Prelude
   build-depends:       base
                      , protolude
@@ -26,6 +27,8 @@ library
                      , containers
                      , http-client
                      , parsec
+                     , lens
+                     , hspec
   default-language:    Haskell2010
   ghc-options:         -Wall
   default-extensions:  OverloadedStrings, NoImplicitPrelude
@@ -48,10 +51,11 @@ test-suite hs-torrent-test
                      , hs-torrent
                      , protolude
                      , hspec
+                     , containers
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
   default-extensions:  OverloadedStrings, NoImplicitPrelude
 
 source-repository head
   type:     git
-  location: https://github.com/githubuser/hs-torrent
+  location: https://github.com/emanuelmd/hs-torrent
