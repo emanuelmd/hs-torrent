@@ -1,15 +1,15 @@
-{-# LANGUAGE TemplateHaskell #-}
+module Data.Meta ( Info (..)
+                 , MetaInfo (..)
+                 , FileInfo (..)
+                 , readMetaInfo
+                 , ) where
 
-module Data.Meta where
-
-import           Prelude         hiding (ByteString)
+import           Prelude         hiding (ByteString, to)
 
 import           Control.Lens
 
 import           Data.BEncoded
 import           Data.ByteString as BL
-import qualified Data.Map        as Map
-import           Data.Maybe      (catMaybes)
 
 type URL = Text
 type Byte = Integer
@@ -24,11 +24,10 @@ instance FromBencoded MetaInfo where
 
   decodeB dict = do
 
-    dict' <- dict ^? _BDict
+    ann       <- dict ^? _BDict . ix "announce"    . _BString . to toS
+    createdBy <- dict ^? _BDict . ix "created by"  . _BString
 
-    ann <- toS <$> (Map.lookup "announce" dict' >>= extract _BString)
-    info <- Map.lookup "info" dict' >>= decodeB
-    createdBy <- Map.lookup "created by" dict' >>= extract _BString
+    info      <- dict ^? _BDict . ix "info"        >>= decodeB
 
     return $ MetaInfo ann createdBy info
 
@@ -46,14 +45,14 @@ instance FromBencoded Info where
 
     dict' <- dict ^? _BDict
 
-    nm <- fmap toS (Map.lookup "name" dict' >>= extract _BString)
-    pieceLen <- Map.lookup "piece length" dict' >>= extract _BInteger
-    pieceMap <- Map.lookup "pieces" dict' >>= extract _BString
+    nm       <- dict' ^? ix "name" . _BString . to toS
+    pieceLen <- dict' ^? ix "piece length" . _BInteger
+    pieceMap <- dict' ^? ix "pieces" . _BString
 
-    let len = Map.lookup "length" dict' >>= extract _BInteger
+    let len = dict' ^? ix "length" . _BInteger
 
-    files' <- Map.lookup "files" dict' >>= extract _BList
-    files  <- (sequenceA $ fmap decodeB files') :: Maybe [FileInfo]
+    files'   <- dict' ^? ix "files" . _BList
+    files    <- traverse decodeB files'
 
     return $ Info nm pieceLen pieceMap len files
 
@@ -63,28 +62,19 @@ data FileInfo = FileInfo
   deriving (Eq, Show)
 
 instance FromBencoded FileInfo where
-  decodeB dict = do
-    dict' <- dict ^? _BDict
 
-    len'   <- Map.lookup "length" dict' >>= extract _BInteger
-    paths' <- Map.lookup "path" dict' >>= extract _BList
+  decodeB dict = FileInfo
+                <$> dict ^? _BDict . ix "length" . _BInteger
+                <*> dict ^? _BDict . ix "path" . _BList . to getBStrings
 
-    return $ FileInfo len' (getBStrings paths')
+getBStrings :: [BEncoded] -> [ByteString]
+getBStrings = mapMaybe (^? _BString)
 
 -- Utils
-getBStrings :: [BEncoded] -> [ByteString]
-getBStrings = catMaybes . fmap (flip (^?) _BString)
-
-extract :: Getting (First a) s a -> s -> Maybe a
-extract = flip (^?)
 
 readMetaInfo :: Text -> IO (Maybe MetaInfo)
 readMetaInfo path = do
 
   contents <- BL.readFile (toS path)
-
-  return $ case decode contents of
-    Just benc -> decodeB benc
-    Nothing   -> Nothing
-
+  pure (decode contents >>= decodeB)
 

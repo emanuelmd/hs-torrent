@@ -20,9 +20,10 @@ data BEncoded = BString ByteString
               | BDict (Map.Map ByteString BEncoded)
               deriving (Show, Eq)
 
--- Parsing
+-- Parsers
+
 numerP :: Stream s m Char => ParsecT s u m Integer
-numerP = (fromJust . readMaybe) <$> (negativeN <|> positiveN)
+numerP = fromJust . readMaybe <$> (negativeN <|> positiveN)
   where
     negativeN = (:) <$> char '-' <*> many1 digit
     positiveN = many digit
@@ -35,7 +36,7 @@ bstringP = do
   return $ BString (toS rest)
 
 bintegerP :: Stream s m Char => ParsecT s u m BEncoded
-bintegerP = BInteger <$> ((skipMany1 $ char 'i') *> numerP <* char 'e')
+bintegerP = BInteger <$> (skipMany1 (char 'i') *> numerP <* char 'e')
 
 blistP :: Stream s m Char => ParsecT s u m BEncoded
 blistP = BList <$> (skipMany1 (char 'l') *> manyTill belementP (char 'e'))
@@ -57,13 +58,13 @@ belementP = bdictP <|> blistP <|> bintegerP <|> bstringP
 
 -- Utility
 encode :: BEncoded -> ByteString
-encode (BString s) = (show $ B.length s) <> ":" <> (toS s)
-encode (BInteger i)  = "i" <> (show i) <> "e"
-encode (BList items) = "l" <> (mconcat $ encode <$> items) <> "e"
-encode (BDict items)     = "d" <> (Map.foldMapWithKey encodePair items) <> "e"
+encode (BString s) = show (B.length s) <> ":" <> toS s
+encode (BInteger i)  = "i" <> show i <> "e"
+encode (BList items) = "l" <> mconcat (encode <$> items) <> "e"
+encode (BDict items)     = "d" <> Map.foldMapWithKey encodePair items <> "e"
   where
     encodePair :: ByteString -> BEncoded -> ByteString
-    encodePair key val = toS $ (show $ B.length key) <> ":" <> key <> (toS $ encode val)
+    encodePair key val = toS $ show (B.length key) <> ":" <> key <> toS (encode val)
 
 decode :: ByteString -> Maybe BEncoded
 decode input =
