@@ -4,16 +4,16 @@ import           Prelude
 
 import           Test.Hspec
 
-import           Data.BEncoded (BEncoded (..), decode, encode)
+import           Data.BEncode (BEncode (..), decode, encode)
 import qualified Data.Map      as Map
 
-sampleDictionary :: BEncoded
+sampleDictionary :: BEncode
 sampleDictionary = BDict . Map.fromList $
   [("name", BString "Emanuel")
   ,("age", BInteger 24)
   ,("shopping_list", BList [BString "eggs", BString "ham", BInteger 20])]
 
-sampleList :: BEncoded
+sampleList :: BEncode
 sampleList = BList [BString "eggs", BString "ham", BInteger 3000]
 
 spec :: Spec

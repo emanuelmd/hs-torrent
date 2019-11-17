@@ -1,7 +1,7 @@
 module Main where
 
-import Protolude
-import Lib as Lib
+import           Lib       (sayIntro)
+import           Protolude
 
 main :: IO ()
-main = Lib.sayHello
+main = sayIntro

@@ -4,11 +4,11 @@ import           Prelude
 
 import           Test.Hspec
 
-import           Data.BEncoded (BEncoded (..), decodeB)
+import           Data.BEncode  (BEncode (..), decodeB)
+import           Data.HTorrent (FileInfo (..), Info (..), MetaInfo (..))
 import qualified Data.Map      as Map
-import           Data.Meta     (FileInfo (..), Info (..), MetaInfo (..))
 
-fileB :: BEncoded
+fileB :: BEncode
 fileB = BDict $ Map.fromList
   [("length", BInteger 200)
   ,("path", BList [BString "first", BString "second"])]
@@ -16,7 +16,7 @@ fileB = BDict $ Map.fromList
 file' :: FileInfo
 file' = FileInfo 200 ["first", "second"]
 
-infoB :: BEncoded
+infoB :: BEncode
 infoB = BDict $ Map.fromList
   [("name", BString "name")
   ,("piece length", BInteger 200)
@@ -26,7 +26,7 @@ infoB = BDict $ Map.fromList
 info' :: Info
 info' = Info "name" 200 "pieces" Nothing [file']
 
-metaInfoB :: BEncoded
+metaInfoB :: BEncode
 metaInfoB = BDict $ Map.fromList
   [("announce", BString "http://whatever")
   ,("created by", BString "me")

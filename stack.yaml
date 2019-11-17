@@ -39,8 +39,6 @@ packages:
 # - git: https://github.com/commercialhaskell/stack.git
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 #
-extra-deps:
-  - bencoding-0.4.5.1@sha256:bb5702e38f32dcf005763f12aa42f95089dad42584329cb41288547d1905d99f,4688
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

@@ -3,14 +3,7 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages:
-- completed:
-    hackage: bencoding-0.4.5.1@sha256:bb5702e38f32dcf005763f12aa42f95089dad42584329cb41288547d1905d99f,4688
-    pantry-tree:
-      size: 627
-      sha256: f79d6a54697cd9f40806e6f38cddf1912de32db4a06b926c18aa88712ce8fb8a
-  original:
-    hackage: bencoding-0.4.5.1@sha256:bb5702e38f32dcf005763f12aa42f95089dad42584329cb41288547d1905d99f,4688
+packages: []
 snapshots:
 - completed:
     size: 498155

@@ -2,11 +2,11 @@ name:                hs-torrent
 version:             0.1.0.0
 -- synopsis:
 -- description:
-homepage:            https://github.com/githubuser/hs-torrent#readme
+homepage:            https://github.com/emanuelmd/hs-torrent#readme
 license:             BSD3
 license-file:        LICENSE
 author:              Emanuel M
-maintainer:          example@example.com
+maintainer:          emanuel.moldovan@secfi.com
 copyright:           2019 Emanuel Moldovan
 category:            Web
 build-type:          Simple
@@ -17,8 +17,11 @@ library
   hs-source-dirs:      src
   ghc-options:         -Wall
   exposed-modules:     Lib
-                     , Data.BEncoded
-                     , Data.Meta
+                     , Data.BEncode
+                     , Data.HTorrent
+                     , Data.HTorrent.MetaInfo
+                     , Data.HTorrent.Info
+                     , Data.HTorrent.FileInfo
   other-modules:       Prelude
   build-depends:       base
                      , protolude
@@ -28,10 +31,11 @@ library
                      , http-client
                      , parsec
                      , lens
-                     , hspec
   default-language:    Haskell2010
   ghc-options:         -Wall
-  default-extensions:  OverloadedStrings, NoImplicitPrelude
+  default-extensions:  OverloadedStrings
+                     , NoImplicitPrelude
+                     , RecordWildCards
 
 executable hs-torrent-exe
   hs-source-dirs:      app
@@ -40,6 +44,7 @@ executable hs-torrent-exe
   build-depends:       base
                      , hs-torrent
                      , protolude
+                     , directory
   default-language:    Haskell2010
   default-extensions:  OverloadedStrings, NoImplicitPrelude
 
